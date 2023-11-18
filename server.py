@@ -1,6 +1,7 @@
-import os.path
 import json
+import os.path
 import socket
+import time
 
 
 def create_file(title: str = "unnamed", extension: str = "txt", make_duplicate: bool = True,
@@ -45,7 +46,7 @@ def create_file(title: str = "unnamed", extension: str = "txt", make_duplicate: 
 
 
 def modify_file(title: str = "unnamed", extension: str = "txt", literal: str = "r+", case: int = 1,
-                **kwargs: any) -> None:
+                **kwargs: any) -> any:
     match case:
         case 1:
             with open(f"{title}.{extension}", literal) as file:
@@ -53,9 +54,57 @@ def modify_file(title: str = "unnamed", extension: str = "txt", literal: str = "
         case 2:
             with open(f"{title}.{extension}", literal) as file:
                 file.truncate()
+        case 3:
+            with open(f"{title}.{extension}", literal) as file:
+                return json.load(file)
         case _:
             pass
 
 
-# create_file("server", "json", False)
-modify_file("server", "json", ip="localhost", port=25565)
+title: str = "server"
+extension: str = "json"
+
+# create_file(title, extension, False)
+modify_file(title, extension, ip="localhost", port=25565)
+data: dict = modify_file("server", "json", case=3)
+
+if __name__ == '__main__':
+
+    main_socket: socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    main_socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+    main_socket.bind((data.get("ip"), data.get("port")))
+    main_socket.setblocking(False)
+    main_socket.listen(4)
+    players_sockets: list[socket] = list()
+
+
+    class Sock:
+        def __init__(self, sock: socket):
+            self.temp_data = sock.recv(1024)
+            self.temp_data = self.temp_data.decode()
+
+        def __enter__(self):
+            print(self.temp_data)
+            return self
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            print("exiting context: ", self, exc_type, exc_val, exc_tb)
+            return True
+
+
+    while True:
+
+        try:
+            new_socket, address = main_socket.accept()
+            new_socket.setblocking(False)
+            players_sockets.append(new_socket)
+
+            print(address, "connected")
+        except BlockingIOError:
+            print("none connected")
+
+        for sock in players_sockets:
+            with Sock(sock):
+                pass
+
+        time.sleep(1)

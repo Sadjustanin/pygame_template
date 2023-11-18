@@ -1,4 +1,5 @@
 import os.path
+import json
 import socket
 
 
@@ -7,26 +8,26 @@ def create_file(title: str = "unnamed", extension: str = "txt", make_duplicate: 
     if os.path.exists(f"{title}.{extension}"):
 
         class DuplicateRestriction(Exception):
-            def __init__(self, *args):
+            def __init__(self, *args: any):
                 super().__init__(args)
 
             def __str__(self):
                 return "Duplication restriction exception"
 
         class DuplicateDisabled(DuplicateRestriction):
-            def __init__(self, *args):
+            def __init__(self, *args: any):
                 super().__init__(args)
 
             def __str__(self):
                 return "Duplication disabled"
 
         class DuplicateLimitation(DuplicateRestriction):
-            def __init__(self, f, *args):
+            def __init__(self, number: int, *args: any):
                 super().__init__(args)
-                self.f = f
+                self.number = number
 
             def __str__(self):
-                return f"Only {self.f} duplicates can exist"
+                return f"Only {self.number} duplicates can exist"
 
         if make_duplicate:
             for i in range(1, duplicate_number + 1):
@@ -43,4 +44,18 @@ def create_file(title: str = "unnamed", extension: str = "txt", make_duplicate: 
         open(f"{title}.{extension}", 'x')
 
 
-create_file("karamba", "json", False)
+def modify_file(title: str = "unnamed", extension: str = "txt", literal: str = "r+", case: int = 1,
+                **kwargs: any) -> None:
+    match case:
+        case 1:
+            with open(f"{title}.{extension}", literal) as file:
+                json.dump(kwargs, file, indent=kwargs.keys().__len__())
+        case 2:
+            with open(f"{title}.{extension}", literal) as file:
+                file.truncate()
+        case _:
+            pass
+
+
+# create_file("server", "json", False)
+modify_file("server", "json", ip="localhost", port=25565)

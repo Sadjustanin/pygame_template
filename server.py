@@ -77,23 +77,22 @@ if __name__ == '__main__':
     main_socket.listen(4)
     players_sockets: list[socket] = list()
 
-
-    class Sock:
-        def __init__(self, sock: socket):
-            self.temp_data = sock.recv(1024)
-            self.temp_data = self.temp_data.decode()
-
-        def __enter__(self):
-            print(self.temp_data)
-            return self
-
-        def __exit__(self, exc_type, exc_val, exc_tb):
-            print("exiting context: ", self, exc_type, exc_val, exc_tb)
-            return True
-
+    # class Sock:
+    #     def __init__(self, sock: socket) -> None:
+    #         self.temp_data = sock
+    #
+    #     def __enter__(self):
+    #         self.temp_data: str = self.temp_data.recv(1024).decode()
+    #
+    #         print(self.temp_data)
+    #         return self
+    #
+    #     def __exit__(self, exc_type, exc_val, exc_tb) -> None:
+    #         print("exiting context: ", self, exc_type, exc_val, exc_tb)
 
     while True:
 
+        # checking whether anyone wants to join the game
         try:
             new_socket, address = main_socket.accept()
             new_socket.setblocking(False)
@@ -103,8 +102,27 @@ if __name__ == '__main__':
         except BlockingIOError:
             print("none connected")
 
+        # read player commands
         for sock in players_sockets:
-            with Sock(sock):
+            try:
+                temp_data: str = sock.recv(1024).decode()
+
+                print("received", temp_data)
+            except BlockingIOError:
                 pass
+            except ConnectionResetError:
+                pass
+
+        # process commands
+
+        # send a new playing field state
+        for sock in players_sockets:
+            try:
+                sock.send("new game state".encode())
+            except BlockingIOError and BrokenPipeError:
+                print("player", players_sockets[players_sockets.index(sock)].getsockname(), "disconnected")
+
+                players_sockets.remove(sock)
+                sock.close()
 
         time.sleep(1)

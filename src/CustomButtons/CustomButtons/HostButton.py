@@ -1,6 +1,5 @@
-import sys
 import pygame
-from src.CustomButtons.CustomButton import CustomButton
+from src.CustomButtons.CustomButtons.CustomButton import CustomButton
 from src.Sound.Main import play_sound
 
 

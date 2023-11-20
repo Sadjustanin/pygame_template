@@ -1,12 +1,9 @@
-import sys
-
 import pygame
-from src.CustomButtons.CustomButton import CustomButton
-from src.Menus.CustomControls.ControlsMenu import run_settings_menu
+from src.CustomButtons.CustomButtons.CustomButton import CustomButton
 from src.Sound.Main import play_sound
 
 
-class SettingsButton(CustomButton):
+class ConnectButton(CustomButton):
     def __init__(self, text: str | bytes | None, width: float | int, height: float | int,
                  pos: tuple[float, float] | tuple[int, int] | tuple[float, int] | tuple[int, float],
                  elevation: int = 10) -> None:
@@ -25,7 +22,6 @@ class SettingsButton(CustomButton):
                 self.dynamic_elevation = self.elevation
                 if self.pressed:
                     play_sound()
-                    run_settings_menu()
                     self.pressed = False
 
         else:

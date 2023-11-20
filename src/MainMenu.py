@@ -7,10 +7,10 @@ from pygame.locals import *
 from pygame.font import Font
 from pygame.rect import RectType, Rect
 
-from src.CustomButtons.ConnectButton import ConnectButton
-from src.CustomButtons.HostButton import HostButton
-from src.CustomButtons.QuitButton import QuitButton
-from src.CustomButtons.SettingsButton import SettingsButton
+from src.CustomButtons.CustomButtons.ConnectButton import ConnectButton
+from src.CustomButtons.CustomButtons.HostButton import HostButton
+from src.CustomButtons.CustomButtons.QuitButton import QuitButton
+from src.CustomButtons.CustomButtons.SettingsButton import SettingsButton
 from src.MainSettings import main_clock, main_menu_background, screen, current_width, current_height
 
 pygame.init()

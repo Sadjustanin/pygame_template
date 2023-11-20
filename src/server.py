@@ -61,12 +61,12 @@ def modify_file(title: str = "unnamed", extension: str = "txt", literal: str = "
             pass
 
 
-title: str = "server"
-extension: str = "json"
+title: str = "server2"
+extension: str = "json2"
 
 # create_file(title, extension, False)
-modify_file(title, extension, ip="localhost", port=25565)
-data: dict = modify_file("server", "json", case=3)
+# modify_file(title, extension, ip="10.242.179.35", port=25565)
+data: dict = modify_file(title, extension, case=3)
 
 if __name__ == '__main__':
 

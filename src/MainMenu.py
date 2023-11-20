@@ -11,14 +11,14 @@ from src.CustomButtons.ConnectButton import ConnectButton
 from src.CustomButtons.HostButton import HostButton
 from src.CustomButtons.QuitButton import QuitButton
 from src.CustomButtons.SettingsButton import SettingsButton
-from src.MainSettings import main_clock, main_menu_background, WIDTH, HEIGHT, screen
+from src.MainSettings import main_clock, main_menu_background, screen, current_width, current_height
 
 pygame.init()
 
-host_button: HostButton = HostButton("Host", 300, 100, (WIDTH - 400, HEIGHT - 600))
-connect_button: ConnectButton = ConnectButton("Connect", 300, 100, (WIDTH - 400, HEIGHT - 450))
-settings_button: SettingsButton = SettingsButton("Settings", 300, 100, (WIDTH - 400, HEIGHT - 300))
-quit_button: QuitButton = QuitButton("Quit", 300, 100, (WIDTH - 400, HEIGHT - 150))
+host_button: HostButton = HostButton("Host", 300, 100, (current_width - 400, current_height - 600))
+connect_button: ConnectButton = ConnectButton("Connect", 300, 100, (current_width - 400, current_height - 450))
+settings_button: SettingsButton = SettingsButton("Settings", 300, 100, (current_width - 400, current_height - 300))
+quit_button: QuitButton = QuitButton("Quit", 300, 100, (current_width - 400, current_height - 150))
 
 
 def draw_text(text: str | bytes | None, received_font: Font,
@@ -32,13 +32,13 @@ def draw_text(text: str | bytes | None, received_font: Font,
 
 def main_menu() -> None:
     while True:
-        screen.blit(pygame.transform.scale(main_menu_background, (WIDTH, HEIGHT)), (0, 0))
+        screen.blit(pygame.transform.scale(main_menu_background, (current_width, current_height)), (0, 0))
         # draw_text("main menu", font, Colors.BLACK.value, screen, 20, 20)
 
-        host_button.draw()
-        connect_button.draw()
-        settings_button.draw()
-        quit_button.draw()
+        host_button.draw(screen)
+        connect_button.draw(screen)
+        settings_button.draw(screen)
+        quit_button.draw(screen)
 
         for event in pygame.event.get():
             if event.type == QUIT:

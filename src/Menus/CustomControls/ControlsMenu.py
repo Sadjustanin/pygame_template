@@ -67,6 +67,3 @@ def run_settings_menu():
         main_clock.tick(60)
 
         src.Menus.CustomControls.Util.reset_keys(actions)
-
-
-run_settings_menu()

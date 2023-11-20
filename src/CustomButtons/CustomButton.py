@@ -2,7 +2,7 @@ import pygame
 from pygame import Surface, SurfaceType
 from pygame.rect import RectType, Rect
 
-from src.MainSettings import font, screen
+from src.MainSettings import font
 from src.Sound.Main import play_sound
 
 
@@ -30,15 +30,21 @@ class CustomButton:
         self.text_surf: Surface | SurfaceType = font.render(text, True, "#FFFFFF")
         self.text_rect: Rect | RectType = self.text_surf.get_rect(center=self.top_rect.center)
 
-    def draw(self) -> None:
+    def draw(self, screen: Surface | SurfaceType) -> None:
         # elevation logic
         self.top_rect.y = self.original_y_pos - self.dynamic_elevation
-        self.text_rect = self.text_surf.get_rect(center=self.top_rect.center)
+        self.text_rect: Rect | RectType = self.text_surf.get_rect(center=self.top_rect.center)
         self.bottom_rect.midtop = self.top_rect.midtop
         self.bottom_rect.height = self.top_rect.height + self.dynamic_elevation
 
-        pygame.draw.rect(screen, self.bottom_color, self.bottom_rect, border_radius=50)
-        pygame.draw.rect(screen, self.top_color, self.top_rect, border_radius=50)
+        current_info = pygame.display.Info()
+        current_width: int = current_info.current_w
+        current_height: int = current_info.current_h
+
+        pygame.draw.rect(pygame.transform.scale(screen, (current_width, current_height)), self.bottom_color,
+                         self.bottom_rect, border_radius=50)
+        pygame.draw.rect(pygame.transform.scale(screen, (current_width, current_height)), self.top_color, self.top_rect,
+                         border_radius=50)
         screen.blit(self.text_surf, self.text_rect)
         self.check_click()
 
